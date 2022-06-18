@@ -1,18 +1,18 @@
-#Specify target
-target = c("Jun", 5)
+#Inputs
+month = "Jun"
+day = 18
 
 #Game setup
 board <- matrix(rep(0, 49), ncol = 7, nrow = 7)
 board[1:2,7] <- NA
 board[7,4:7] <- NA
-labeled_board <- matrix(c(month.abb[1:6], NA, month.abb[7:12], NA, 1:31, rep(NA, 4)), ncol = 7, nrow = 7, byrow = TRUE)
+labeled_board <- matrix(c(month.abb[1:6], NA, month.abb[7:12], NA, 1:31, rep(NA, 4)), 
+                        ncol = 7, nrow = 7, byrow = TRUE)
 
 #Remove targets from the board
+target = c(month, day)
 board[labeled_board == target[1]] <- NA
 board[labeled_board == target[2]] <- NA
-
-print(labeled_board)
-print(board)
 
 #Create pieces
 piece1 <- matrix(rep(1,6), ncol = 2, byrow = TRUE)
@@ -24,8 +24,8 @@ piece6 <- matrix(c(6,0,6,6,0,6,0,6), ncol = 2, byrow = TRUE)
 piece7 <- matrix(c(7,7,7,7,0,7), ncol = 2, byrow = TRUE)
 piece8 <- matrix(c(0,8,8,0,8,0,8,8,0), ncol = 3, byrow = TRUE)
 piece_list <- list(piece1, piece2, piece3, piece4, piece5, piece6, piece7, piece8)
-print(piece_list)
 
+#Create functions
 rotate <- function(x) t(apply(x, 2, rev))
 place_piece <- function(piece, board){
   
@@ -75,66 +75,61 @@ place_piece <- function(piece, board){
   
 }
 
-{i = 1
-j = 1
-k = 1
-l = 1
-m = 1
-n = 1
-o = 1
-p = 1
-solution_counter = 0
-stop = FALSE}
-
+#Run below to get solutions
 solutions <- list()
+solution_counter = 0
+stop = FALSE
 
 placements1 <- place_piece(piece1, board)
 
-for(p1 in placements1){print(i)
+for(p1 in placements1){
   placements2 <- place_piece(piece2, p1)
-  i = i + 1
   if(stop){break}
   
   for(p2 in placements2){
     placements3 <- place_piece(piece3, p2)
-    j = j + 1
     if(stop){break}
     
     for(p3 in placements3){
       placements4 <- place_piece(piece4, p3)
-      k = k + 1
       if(stop){break}
       
       for(p4 in placements4){
         placements5 <- place_piece(piece5, p4)
-        l = l + 1
         if(stop){break}
         
         for(p5 in placements5){
           placements6 <- place_piece(piece6, p5)
-          m = m + 1
           if(stop){break}
           
           for(p6 in placements6){
             placements7 <- place_piece(piece7, p6)
-            n = n + 1
             if(stop){break}
             
             for(p7 in placements7){
               placements8 <- place_piece(piece8, p7)
-              o = o + 1
               if(stop){break}
               
               for(f in placements8){
                 if(min(f, na.rm = TRUE) > 0){
                   solution_counter = solution_counter + 1
                   solutions[[solution_counter]] = f
-                  print(paste("Solution:", solution_counter))
-                  print(f)
-                  }
+                  
+                  #Plot
+                  f = rotate(f)
+                  image(x = 1:nrow(f),
+                        y = 1:ncol(f),
+                        z = f,
+                        col = min(f, na.rm = TRUE):max(f, na.rm = TRUE),
+                        xaxt = 'n',
+                        yaxt = 'n',
+                        xlab = '',
+                        ylab = '',
+                        main = paste("Solution", solution_counter))
+                }
+                
                 if(stop){break}
-                #stop = min(f, na.rm = TRUE) > 0
-                if(stop){break}
+                
               }
             }
           }
@@ -143,27 +138,3 @@ for(p1 in placements1){print(i)
     }
   }
 }
-
-print(solutions)
-
-# #Get board edge
-# row_board <- row(board)
-# col_board <- col(board)
-# edges <- matrix(rep(FALSE, 49), ncol = 7, nrow = 7)
-# edges[is.na(board)] <- NA
-# row_board[is.na(board)] <- NA
-# col_board[is.na(board)] <- NA
-# 
-# for(col in 1:ncol(board)){
-#   row_max <- apply(row_board, 2, max, na.rm = TRUE)[col]
-#   edges[row_max, col] <- TRUE
-#   row_min <- apply(row_board, 2, min, na.rm = TRUE)[col]
-#   edges[row_min, col] <- TRUE
-# }
-# 
-# for(row in 1:nrow(board)){
-#   col_max <- apply(col_board, 1, max, na.rm = TRUE)[row]
-#   edges[row, col_max] <- TRUE
-#   col_min <- apply(col_board, 1, min, na.rm = TRUE)[row]
-#   edges[row, col_min] <- TRUE
-# }
